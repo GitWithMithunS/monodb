@@ -3,7 +3,10 @@ const { connecttoDb, getDb } = require('./db')
 const { ObjectId } = require('mongodb')
 
 //init app and middleware
-const app = express() //to create an instance
+const app = express()                      //to create an instance
+
+app.use(express.json())                           //app.use(express) is part of a Node.js/Express.js application. the use method provided by the Express.js framework is used to incorporate middleware into your application.When you pass express as middleware using app.use(express), you are telling your application to use the default middleware provided by Express.js.
+//it passes any json coming in on request.(basically in a post request the body of the post request is to be access by using request.body property.and to use this property the express middleware('app.use(express.json())') must be used  )
 
 //db connection
 connecttoDb((err) => {                    //The connecttoDb function is called to establish a connection to the MongoDB database. It is an asynchronous, taking a callback function that is executed once the connection is established or if there's an error
@@ -69,4 +72,17 @@ app.get('/books/:id', (req, res) => {
     } else {
         res.status(500).json({error:'Not a valid document id'})
     }
+})
+
+app.post('/books',(req,res) => {
+    const book = req.body
+
+    db.collection('books')
+    .insertOne(book)
+    .then(result => {
+        res.status(201).json(result)                                       
+    })
+    .catch(err => {
+        res.status(500).send('the book could not be added to the document')
+    })
 })
