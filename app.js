@@ -29,23 +29,22 @@ connecttoDb((err) => {                    //The connecttoDb function is called t
 
 
 
-//routes
+//   ROUTES   ;
+
 app.get('/', (req, res) => {
     res.send('welcome to the api')
 })
 
 app.get('/books', (req, res) => {
-
     let books = []
-
     db.collection('books')                       //books is the name of the collection inside the mongodb which ur trying to access
         .find()                                      // .find()       //the find method returns a cursor (which is an object) that points to the document in the db outlined by our query .so if we do not add any querry it points to the whole collection of documents.
         //if we add filter(arguments) then the cursor will point to subset of documents based on the filter.now the cusror object which is returned from find method exposes method that we can use to fetch data which the cursor points to (ex: toArray , forEach)
         //toArray - fetchs all doc. pointed by the cursor and puts it into an array
         //forEach - iterates the documents one at a time and allows use to process each one of the individually.
         //mongodb may hv 1000s of docs. in a collection.so it allows u to fetch docs in batches(mostly 101 docs at a time to reduce the risk of using lotof network at the same time for fetching all 1000s of docs.)  
-        //so generally we use toArray method to fetch the first set of batch and then use forEach methood to go through al the docs one by one. and so on.{note:- this is not true in case of mongodb shell . where it automatically iterates the first batche of 20docs and using 'i t' we can access next batch of docs.we need not use cursor method here.}
-        .sort({ author: 1 })                            //sorts the docs in assending order w.r.t author and returns a cursor poiting to it
+        //so generally we use toArray method to fetch the first set of batch and then use forEach methood to go through all the docs one by one. and so on.{note:- this is not true in case of mongodb shell . where it automatically iterates the first batch of 20docs and using 'i t' we can access next batch of docs.we need not use cursor method here.}
+        .sort({ author: 1 })                            //sorts the docs in assending order w.r.t author and returns a cursor pointing to it
         .forEach(book => books.push(book))           // iterating through each elements(here the element is book) and storing(by using push method) it into books array
         .then(() => {
             res.status(200).json(books)              //resolve the fuctionby sending/returing the books array
@@ -70,19 +69,52 @@ app.get('/books/:id', (req, res) => {
                 console.log('this is the error recived', err)
             })
     } else {
-        res.status(500).json({error:'Not a valid document id'})
+        res.status(500).json({ error: 'Not a valid document id' })
     }
 })
 
-app.post('/books',(req,res) => {
+app.post('/books', (req, res) => {
     const book = req.body
 
     db.collection('books')
-    .insertOne(book)
-    .then(result => {
-        res.status(201).json(result)                                       
-    })
-    .catch(err => {
-        res.status(500).send('the book could not be added to the document')
-    })
+        .insertOne(book)
+        .then(result => {
+            res.status(201).json(result)
+        })
+        .catch(err => {
+            res.status(500).send('the book could not be added to the document')
+        })
+})
+
+app.delete('/books/:id', (req, res) => {
+    if (ObjectId.isValid(req.params.id)) {
+        db.collection("books")
+            .deleteOne({ _id: new ObjectId(req.params.id) })
+            .then((e) => {
+                res.status(200).json(e)
+            })
+            .catch(err => {
+                res.status(500).send('the book could not be deleted from the document')
+            })
+    }
+    else {
+        res.status(500).json({ error: 'Not a valid document id' })
+    }
+})
+
+app.patch('/books/:id',(req,res) => {             //patch is used in case of updating a data(i have used put method in mydiary to update the data)
+    const updates = req.body
+    if (ObjectId.isValid(req.params.id)) {
+        db.collection("books")
+            .updateOne({ _id: new ObjectId(req.params.id)},{$set:updates})
+            .then((e) => {
+                res.status(200).json(e)
+            })
+            .catch(err => {
+                res.status(500).send('the book could not be updated to the document')
+            })
+    }
+    else {
+        res.status(500).json({ error: 'Not a valid document id' })
+    }
 })
