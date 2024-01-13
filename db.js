@@ -2,12 +2,13 @@ const { MongoClient } = require('mongodb')            //The code destructures th
 
 
 //Database Connection and Exported Functions:
-
+// let url = 'mongodb://127.0.0.1:27017/netninja?directConnection=true'       //it is used to connect to the MongoDB server at the specified URL  {NOTE:- U ARE USING 'netninja' COLLECTION AND NOT 'mydiary' COLLECTION HERE AS STATED IN THE URL}
+let url = "mongodb+srv://mongolearn:learn123@cluster0.s0o48ew.mongodb.net/?retryWrites=true&w=majority"
 let dbConnection                                      //This variable is declared to store the reference to the connected database.
 module.exports = {
     //to connect to database
     connecttoDb: (cb) => {                            //connecttoDb: This function is designed to connect to the MongoDB database. It takes a callback function cb as a parameter, which is intended to be executed after the database connection is established
-        MongoClient.connect('mongodb://127.0.0.1:27017/netninja?directConnection=true')    //it is used to connect to the MongoDB server at the specified URL  {NOTE:- U ARE USING 'netninja' COLLECTION AND NOT 'mydiary' COLLECTION HERE AS STATED IN THE URL}
+        MongoClient.connect(url)    
             .then((client) => {
                  dbConnection = client.db()           //Upon successful connection, it sets dbConnection to the connected database (client.db()).
                 return cb()                           //return the callback function

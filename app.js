@@ -36,6 +36,10 @@ app.get('/', (req, res) => {
 })
 
 app.get('/books', (req, res) => {
+    //current page (pagination)
+    const page = req.query.p || 0
+    const booksperpage = 3
+
     let books = []
     db.collection('books')                       //books is the name of the collection inside the mongodb which ur trying to access
         .find()                                      // .find()       //the find method returns a cursor (which is an object) that points to the document in the db outlined by our query .so if we do not add any querry it points to the whole collection of documents.
@@ -45,6 +49,8 @@ app.get('/books', (req, res) => {
         //mongodb may hv 1000s of docs. in a collection.so it allows u to fetch docs in batches(mostly 101 docs at a time to reduce the risk of using lotof network at the same time for fetching all 1000s of docs.)  
         //so generally we use toArray method to fetch the first set of batch and then use forEach methood to go through all the docs one by one. and so on.{note:- this is not true in case of mongodb shell . where it automatically iterates the first batch of 20docs and using 'i t' we can access next batch of docs.we need not use cursor method here.}
         .sort({ author: 1 })                            //sorts the docs in assending order w.r.t author and returns a cursor pointing to it
+        .skip(page*booksperpage)
+        .limit(booksperpage)
         .forEach(book => books.push(book))           // iterating through each elements(here the element is book) and storing(by using push method) it into books array
         .then(() => {
             res.status(200).json(books)              //resolve the fuctionby sending/returing the books array
