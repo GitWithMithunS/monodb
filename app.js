@@ -35,6 +35,8 @@ app.get('/', (req, res) => {
     res.send('welcome to the api')
 })
 
+
+//fetxh all books
 app.get('/books', (req, res) => {
     //current page (pagination)
     const page = req.query.p || 0
@@ -62,6 +64,7 @@ app.get('/books', (req, res) => {
     // res.json({msg:'welcome to the api'})      //remember mulltiple respose(res.json or res.send ) can not be used in a single express.js
 })
 
+//fetch a particular book
 app.get('/books/:id', (req, res) => {
 
     if (ObjectId.isValid(req.params.id)) {            //ObjectId.isValid() is a static method of the ObjectId class provided by the MongoDB Node.js driver.It checks whether the provided string id is a valid ObjectId format.Returns true if the string is a valid ObjectId, and false otherwise 
@@ -79,6 +82,7 @@ app.get('/books/:id', (req, res) => {
     }
 })
 
+//add a book
 app.post('/books', (req, res) => {
     const book = req.body
 
@@ -92,6 +96,7 @@ app.post('/books', (req, res) => {
         })
 })
 
+//delete a book
 app.delete('/books/:id', (req, res) => {
     if (ObjectId.isValid(req.params.id)) {
         db.collection("books")
@@ -108,6 +113,7 @@ app.delete('/books/:id', (req, res) => {
     }
 })
 
+//update a book
 app.patch('/books/:id',(req,res) => {             //patch is used in case of updating a data(i have used put method in mydiary to update the data)
     const updates = req.body
     if (ObjectId.isValid(req.params.id)) {
