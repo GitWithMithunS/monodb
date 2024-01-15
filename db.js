@@ -1,5 +1,6 @@
 const { MongoClient } = require('mongodb')            //The code destructures the mongoClient object from the 'mongodb' library. This object is used to interact with the MongoDB server
-
+//MongoClient is a part of the official MongoDB driver for Node.js, which is a low-level driver that allows your Node.js application to connect to a MongoDB database server, send commands, and receive responses. It provides a basic interface for interacting with MongoDB, handling tasks like connecting to a database, executing queries, and managing transactions.
+//On the other hand, an ODM (Object Data Modeling) library, such as Mongoose, is a higher-level abstraction that adds an extra layer of functionality on top of the MongoDB driver. ODMs are specifically designed to help developers work with MongoDB in a more object-oriented way. They often provide features like schema definition, model creation, validation, middleware, and a more intuitive interface for working with MongoDB data
 
 //Database Connection and Exported Functions:
 // let url = 'mongodb://127.0.0.1:27017/netninja?directConnection=true'       //it is used to connect to the MongoDB server at the specified URL  {NOTE:- U ARE USING 'netninja' COLLECTION AND NOT 'mydiary' COLLECTION HERE AS STATED IN THE URL}
